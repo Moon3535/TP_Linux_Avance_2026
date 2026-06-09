@@ -353,12 +353,24 @@ Interprétation : en fonction du signal envoyé, le processus change de statut (
 
 ```text
 Votre commande :
+sleep 60
+Ctrl + z
+bg
+fg
 
 
 Votre résultat :
+@Moon3535 ➜ /workspaces/TP_Linux_Avance_2026 (main) $ sleep 60
+[1]+  Done                    sleep 300
+^Z
+[1]+  Stopped                 sleep 60
+@Moon3535 ➜ /workspaces/TP_Linux_Avance_2026 (main) $ bg
+[1]+ sleep 60 &
+@Moon3535 ➜ /workspaces/TP_Linux_Avance_2026 (main) $ fg
+sleep 60
 
 
-Interprétation :
+Interprétation : sleep 60 lance le processus en premier plan, Ctrl + z envoie SIGSTOP et suspend le processus, bg envoie SIGCONT qui dit au processus de reprendre son exécution mais en arrière-plan et fg fait repasser le processus au premier plan. 
 
 ```
 
