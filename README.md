@@ -137,20 +137,21 @@ Mem:           7.8Gi       1.6Gi       145Mi        63Mi       6.0Gi       5.8Gi
 Swap:             0B          0B          0B
 
 
-Interprétation :
+Interprétation : 2 vCPUs et 7.8 Gi sont exposés par le Codespace.
 
 ```
 
 #### Question 0.2.c — Inspecter `/proc/1/cgroup` et `/proc/1/status`. Le PID 1 du Codespace est-il vraiment `systemd` ? Pourquoi ?
 
 ```text
-Votre commande :
+Votre commande : cat /proc/1/status | grep -i "name" && cat /proc/1/cgroup
 
 
-Votre résultat :
+Votre résultat : Name:   sh
+0::/init
 
 
-Interprétation :
+Interprétation : Le PID 1 n'est pas systemd mais sh car le Codespace tourne dans un conteneur Docker, or il doit s'agir d'une image très légère qui ne lance pas tout init.
 
 ```
 
@@ -168,13 +169,17 @@ git commit -m "chore: init livrables/"
 #### Question 0.3 — Vérifier l'historique avec `git log --oneline -5`. Copier la sortie ci-dessous.
 
 ```text
-Votre commande :
+Votre commande : git log --oneline -5
 
 
-Votre résultat :
+Votre résultat : 4af2318 (HEAD -> main) chore: init livrables/
+66659c3 (origin/main, origin/HEAD) commit et push readme
+a08409f Extend workshop to 25h with kernel internals, eBPF, K8s and answer blocks
+372476f Configure devcontainer with Ubuntu 22.04 setup
+72284ee Create devcontainer.json
 
 
-Interprétation :
+Interprétation : affiche tous les 5 derniers logs de git. 
 
 ```
 
@@ -226,65 +231,73 @@ htop
 #### Question 1.1.a.1 — Quel est le PID de votre shell courant (`echo $$`) ?
 
 ```text
-Votre commande :
+Votre commande : echo $$
 
 
-Votre résultat :
+Votre résultat : 1090
 
 
-Interprétation :
+Interprétation : le PID de mon shell courant est 1090.
 
 ```
 
 #### Question 1.1.a.2 — Quel processus est le parent de votre shell (utilisez `ps -o pid,ppid,comm -p $$` puis remontez la chaîne) ?
 
 ```text
-Votre commande :
+Votre commande : ps -o pid,ppid,comm -p $$ && ps -o pid,ppid,comm -p 1079
 
 
-Votre résultat :
+Votre résultat :    
+    PID    PPID COMMAND
+   1090    1079 bash
+    PID    PPID COMMAND
+   1079     963 MainThread
 
 
-Interprétation :
+Interprétation : le processus parent de mon shell est MainThread.
 
 ```
 
 #### Question 1.1.a.3 — Combien de threads le processus PID 1 utilise-t-il ? (Astuce : `/proc/1/status` champ `Threads`, ou `ps -L`.)
 
 ```text
-Votre commande :
+Votre commande : cat /proc/1/status | grep Threads
 
 
-Votre résultat :
+Votre résultat : Threads:        1
 
 
-Interprétation :
+Interprétation : Le processus PID 1 utilise un thread.
 
 ```
 
 #### Question 1.1.a.4 — Trouver le top 3 des processus consommant le plus de mémoire **résidente** (RSS), pas virtuelle.
 
 ```text
-Votre commande :
+Votre commande : ps aux --sort=-rss | head -n 4
 
 
 Votre résultat :
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+vscode       986  1.5  4.7 18778456 387672 ?     Sl   12:11   0:55 /vscode/bin/linux-x64/6a44c352bd24569c417e530095901b649960f9f8/node --dns-result-order=ipv4first /vscode/bin/linux-x64/6a44c352bd24569c417e530095901b649960f9f8/out/bootstrap-fork --type=extensionHost --transformURIs --useHostProxy=false
+vscode       963  0.3  2.0 1802704 168264 ?      Sl   12:11   0:12 /vscode/bin/linux-x64/6a44c352bd24569c417e530095901b649960f9f8/node /vscode/bin/linux-x64/6a44c352bd24569c417e530095901b649960f9f8/out/server-main.js --log trace --force-disable-user-env --server-data-dir /home/vscode/.vscode-remote --accept-server-license-terms --host 127.0.0.1 --port 0 --connection-token-file /home/vscode/.vscode-remote/data/Machine/.connection-token-6a44c352bd24569c417e530095901b649960f9f8 --extensions-download-dir /home/vscode/.vscode-remote/extensionsCache --install-builtin-extension GitHub.vscode-pull-request-github --install-builtin-extension github.github-vscode-theme --install-builtin-extension github.codespaces --install-extension ms-azuretools.vscode-containers --do-not-sync --start-server  --enable-remote-auto-shutdown --skip-requirements-check
+vscode      1458  0.0  1.1 1613956 97388 ?       Sl   12:11   0:01 /vscode/bin/linux-x64/6a44c352bd24569c417e530095901b649960f9f8/node /vscode/bin/linux-x64/6a44c352bd24569c417e530095901b649960f9f8/extensions/markdown-language-features/dist/serverWorkerMain --node-ipc --clientProcessId=986
 
 
-Interprétation :
+Interprétation : c'est les processus VScode qui consomment le plus de mémoire résidente.
 
 ```
 
 #### Question 1.1.a.5 — Lire `/proc/$$/limits`. Quelle est la limite molle de `nofile` (max fichiers ouverts) pour votre shell ? La modifier temporairement à 2048 avec `ulimit -n`.
 
 ```text
-Votre commande :
+Votre commande : cat /proc/$$/limits | grep -i "files"
+ulimit -n 2048
+
+Votre résultat : Max open files            524288               524288               files
 
 
-Votre résultat :
-
-
-Interprétation :
+Interprétation : la limite molle avant modification est de 524288.
 
 ```
 
@@ -318,13 +331,21 @@ kill -SIGKILL $!
 #### Question 1.1.b.1 — Que retourne `ps -o pid,stat,comm -p $PID_SLEEP` quand le processus est en SIGSTOP, puis après SIGCONT ? Recopier les deux sorties.
 
 ```text
-Votre commande :
+Votre commande : 
+kill -SIGSTOP $PID_SLEEP
+ps -o pid,stat,comm -p $PID_SLEEP
 
+kill -SIGCONT $PID_SLEEP
+ps -o pid,stat,comm -p $PID_SLEEP
 
 Votre résultat :
+  PID STAT COMMAND
+  33900 T    sleep
 
+   PID STAT COMMAND
+  33900 S    sleep
 
-Interprétation :
+Interprétation : en fonction du signal envoyé, le processus change de statut (T pour stopped et S pour sleeping)
 
 ```
 
