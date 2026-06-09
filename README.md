@@ -377,10 +377,10 @@ Interprétation : sleep 60 lance le processus en premier plan, Ctrl + z envoie S
 #### Question 1.1.b.3 — Pourquoi SIGKILL et SIGSTOP ne peuvent-ils pas être interceptés ? Lire `man 7 signal` et citer le passage pertinent.
 
 ```text
-Votre résultat :
+Votre résultat : The signals SIGKILL and SIGSTOP cannot be caught, blocked, or ignored.
 
 
-Interprétation :
+Interprétation : SIGKILL et SIGSTOP ne peuvent pas être interceptés car ils sont exécutés directement par le noyau pour garantir qu'un administrateur puisse toujours détruire ou figer un processus devenu incontrôlable.
 
 ```
 
@@ -451,12 +451,24 @@ kill -SIGTERM $(pgrep -f signal_demo.sh)
 
 ```text
 Votre commande :
+terminal 1 : ./signal_demo.sh
+
+terminal 2 : kill -SIGHUP $(pgrep -f signal_demo.sh)
+kill -SIGTERM $(pgrep -f signal_demo.sh)
 
 
-Votre résultat :
+Votre résultat : [14:07:14] Démarrage (PID: 51192). Lockfile: /tmp/signal_demo_51192.lock
+Envoyez SIGHUP pour recharger, SIGTERM/SIGINT pour quitter.
+[14:07:14] En cours... (itération 0)
+[14:07:19] SIGHUP reçu : rechargement de la configuration...
+[14:07:20] Configuration rechargée.
+[14:07:20] En cours... (itération 1)
+
+[14:07:25] Signal reçu : nettoyage en cours...
+[14:07:25] Nettoyage terminé. Bye.
 
 
-Interprétation :
+Interprétation : Au lancement du script
 
 ```
 
