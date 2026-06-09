@@ -115,23 +115,26 @@ cat /proc/cmdline
 #### Question 0.2.a — Identifier la version exacte du noyau et son origine (vanille, Azure, GKE…).
 
 ```text
-Votre commande :
+Votre commande : uname -a
 
 
-Votre résultat :
+Votre résultat : Linux codespaces-5cedfa 6.8.0-1052-azure #58~22.04.1-Ubuntu SMP Thu Mar 26 05:02:21 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
 
 
-Interprétation :
+Interprétation : la version exacte du noyau est 6.8.0-1052 et son origine est azure.
 
 ```
 
 #### Question 0.2.b — Combien de vCPUs et combien de RAM le Codespace expose-t-il ? D'où vient cette information (`/proc/cpuinfo`, `lscpu`, cgroup) ?
 
 ```text
-Votre commande :
+Votre commande : lscpu | grep ^CPU\(s\) && free -h
 
 
-Votre résultat :
+Votre résultat : CPU(s):                                  2
+               total        used        free      shared  buff/cache   available
+Mem:           7.8Gi       1.6Gi       145Mi        63Mi       6.0Gi       5.8Gi
+Swap:             0B          0B          0B
 
 
 Interprétation :
