@@ -468,7 +468,7 @@ Envoyez SIGHUP pour recharger, SIGTERM/SIGINT pour quitter.
 [14:07:25] Nettoyage terminé. Bye.
 
 
-Interprétation : Au lancement du script
+Interprétation : Au lancement du script, le processus de PID 51192 est créé, on envoie depuis le second terminal le signal SIGHUP qui est bien reçu et on envoie un SIGTERM pour terminer le processus.
 
 ```
 
